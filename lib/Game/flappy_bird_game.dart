@@ -2,10 +2,11 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/painting.dart';
+
 import '../components/backGround.dart';
 import '../components/bird.dart';
 import '../components/ground.dart';
-import '../components/pipeGroup.dart';
+import '../components/pipe_group.dart';
 import '../utils/configuration.dart';
 
 class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
@@ -22,6 +23,7 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
       Ground(),
       bird = Bird(),
       score = buildScore(),
+      PipeGroup()
     ]);
 
     interval.onTick = () => add(PipeGroup());
@@ -37,10 +39,15 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
         ));
   }
 
+  @override
+  void onTap() {
+    bird.fly();
+  }
 
   @override
   void update(double dt) {
     super.update(dt);
     interval.update(dt);
+    score.text = 'Score: ${bird.score}';
   }
 }
