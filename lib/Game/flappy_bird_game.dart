@@ -3,7 +3,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/painting.dart';
-import '../components/backGround.dart';
+import '../components/background.dart';
 import '../components/bird.dart';
 import '../components/ground.dart';
 import '../components/pipe_group.dart';
@@ -19,25 +19,26 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
 
   @override
   Future<void> onLoad() async {
-    addAll([
-      Background(),
-      Ground(),
-      bird = Bird(),
-      score = buildScore(),
-      PipeGroup()
-    ]);
-
+    add(Background());
+    add(Ground());
+    bird = Bird();
+    add(bird);
     interval.onTick = () => add(PipeGroup());
+    add(score = buildScore());
   }
 
   TextComponent buildScore() {
     return TextComponent(
-        position: Vector2(size.x / 2, size.y / 2 * 0.2),
-        anchor: Anchor.center,
-        textRenderer: TextPaint(
-          style: const TextStyle(
-              fontSize: 40, fontFamily: 'Game', fontWeight: FontWeight.bold),
-        ));
+      position: Vector2(size.x / 2, size.y / 2 * 0.2),
+      anchor: Anchor.center,
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          fontSize: 40,
+          fontFamily: 'Game',
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
   }
 
   @override

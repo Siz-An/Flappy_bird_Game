@@ -1,3 +1,4 @@
+// components/pipe_group.dart
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -5,7 +6,7 @@ import '../Game/flappy_bird_game.dart';
 import '../utils/assets.dart';
 import '../utils/configuration.dart';
 import '../utils/pipe_position.dart';
-import 'package:flappy_bird/components/pipe.dart';
+import 'pipe.dart';
 
 class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
   PipeGroup();
@@ -20,8 +21,9 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
     position.x = gameRef.size.x;
 
     final heightMinusGround = gameRef.size.y - Config.groundHeight;
-    final spacing = 100 + _random.nextDouble() * (heightMinusGround / 4);
-    final centerY = spacing + _random.nextDouble() * (heightMinusGround - spacing);
+    final spacing = Config.pipeSpacing; // Use the new spacing configuration
+    final centerY = Config.pipeMinHeight +
+        _random.nextDouble() * (heightMinusGround - Config.pipeMinHeight * 2 - spacing);
 
     // Ensure centerY is within bounds
     final topPipeHeight = centerY - spacing / 2;
