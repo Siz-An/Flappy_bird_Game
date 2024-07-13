@@ -1,8 +1,8 @@
+// Game/flappy_bird_game.dart
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/painting.dart';
-
 import '../components/backGround.dart';
 import '../components/bird.dart';
 import '../components/ground.dart';
@@ -16,6 +16,7 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
   Timer interval = Timer(Config.pipeInterval, repeat: true);
   bool isHit = false;
   late TextComponent score;
+
   @override
   Future<void> onLoad() async {
     addAll([

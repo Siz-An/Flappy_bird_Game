@@ -1,3 +1,4 @@
+// components/bird.dart
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -57,9 +58,9 @@ class Bird extends SpriteGroupComponent<BirdMovement>
 
   @override
   void onCollisionStart(
-    Set<Vector2> intersectionPoints,
-    PositionComponent other,
-  ) {
+      Set<Vector2> intersectionPoints,
+      PositionComponent other,
+      ) {
     super.onCollisionStart(intersectionPoints, other);
 
     gameOver();

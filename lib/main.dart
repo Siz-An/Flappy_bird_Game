@@ -1,3 +1,4 @@
+// main.dart
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flappy_bird/screens/main_menu_screen.dart';
