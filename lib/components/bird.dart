@@ -1,4 +1,3 @@
-// components/bird.dart
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -14,14 +13,13 @@ class Bird extends SpriteGroupComponent<BirdMovement>
   Bird();
 
   int score = 0;
+  double velocityY = 0.0;  // Velocity variable for bird movement
 
   @override
   Future<void> onLoad() async {
     final birdMidFlap = await gameRef.loadSprite(Assets.birdMidFlap);
     final birdUpFlap = await gameRef.loadSprite(Assets.birdUpFlap);
     final birdDownFlap = await gameRef.loadSprite(Assets.birdDownFlap);
-
-    gameRef.bird;
 
     size = Vector2(50, 40);
     position = Vector2(50, gameRef.size.y / 2 - size.y / 2);
@@ -38,22 +36,37 @@ class Bird extends SpriteGroupComponent<BirdMovement>
   @override
   void update(double dt) {
     super.update(dt);
-    position.y += Config.birdVelocity * dt;
-    if (position.y < 1) {
+
+    // Apply gravity
+    velocityY += Config.gravity * dt;
+
+    // Update bird's position
+    position.y += velocityY * dt;
+
+    // Check if bird hits the top of the screen
+    if (position.y < 0) {
+      position.y = 0;
+      velocityY = 0;
+    }
+
+    // Check if bird hits the ground
+    if (position.y + size.y > gameRef.size.y - Config.groundHeight) {
+      position.y = gameRef.size.y - Config.groundHeight - size.y;
       gameOver();
     }
   }
 
   void fly() {
-    add(
-      MoveByEffect(
-        Vector2(0, Config.gravity),
-        EffectController(duration: 0.2, curve: Curves.decelerate),
-        onComplete: () => current = BirdMovement.down,
-      ),
-    );
+    // Apply an upward velocity
+    velocityY = -Config.birdFlyVelocity;
+
     FlameAudio.play(Assets.flying);
     current = BirdMovement.up;
+
+    // Reset to middle after a short delay
+    Future.delayed(Duration(milliseconds: 300), () {
+      current = BirdMovement.middle;
+    });
   }
 
   @override
@@ -62,18 +75,18 @@ class Bird extends SpriteGroupComponent<BirdMovement>
       PositionComponent other,
       ) {
     super.onCollisionStart(intersectionPoints, other);
-
     gameOver();
   }
 
   void reset() {
     position = Vector2(50, gameRef.size.y / 2 - size.y / 2);
     score = 0;
+    velocityY = 0.0;  // Reset velocity
   }
 
   void gameOver() {
     FlameAudio.play(Assets.collision);
-    game.isHit = true;
+    gameRef.isHit = true;
     gameRef.overlays.add('gameOver');
     gameRef.pauseEngine();
   }

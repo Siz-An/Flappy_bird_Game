@@ -50,7 +50,7 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
     super.update(dt);
     position.x -= Config.gameSpeed * dt;
 
-    if (position.x < -50) { // Adjust the condition to ensure pipes are removed correctly
+    if (position.x < -50) {
       updateScore();
       removeFromParent();
     }
