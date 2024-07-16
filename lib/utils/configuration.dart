@@ -7,6 +7,7 @@ class Config {
   static const gravity = -100.0;
   static const cloudsHeight = 70.0;
 
-  static const pipeSpacing = 150.0; // Adjusted spacing between pipes
-  static const pipeMinHeight = 50.0; // Minimum height for pipes
+
+  static const double pipeSpacing = 200.0; // Space between top and bottom pipes
+  static const double pipeMinHeight = 100.0; // Minimum height for pipes
 }

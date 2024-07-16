@@ -1,4 +1,3 @@
-// components/pipe_group.dart
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -17,22 +16,27 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // Initialize position.x to the right edge of the screen
     position.x = gameRef.size.x;
 
     final heightMinusGround = gameRef.size.y - Config.groundHeight;
-    final spacing = Config.pipeSpacing; // Use the new spacing configuration
+    final spacing = Config.pipeSpacing;
+
+    // Determine a reasonable center position for the pipes
     final centerY = Config.pipeMinHeight +
         _random.nextDouble() * (heightMinusGround - Config.pipeMinHeight * 2 - spacing);
 
-    // Ensure centerY is within bounds
+    // Calculate the heights of the pipes
     final topPipeHeight = centerY - spacing / 2;
     final bottomPipeHeight = heightMinusGround - (centerY + spacing / 2);
 
-    // Add top and bottom pipes
+    // Ensure heights are clamped to avoid negative values
+    final adjustedTopPipeHeight = topPipeHeight.clamp(Config.pipeMinHeight, heightMinusGround).toDouble();
+    final adjustedBottomPipeHeight = bottomPipeHeight.clamp(Config.pipeMinHeight, heightMinusGround).toDouble();
+
+    // Add pipes to the group
     addAll([
-      Pipe(pipePosition: PipePosition.top, height: topPipeHeight),
-      Pipe(pipePosition: PipePosition.bottom, height: bottomPipeHeight),
+      Pipe(pipePosition: PipePosition.top, height: adjustedTopPipeHeight),
+      Pipe(pipePosition: PipePosition.bottom, height: adjustedBottomPipeHeight),
     ]);
   }
 
@@ -46,13 +50,11 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
     super.update(dt);
     position.x -= Config.gameSpeed * dt;
 
-    // Check if the pipe group has moved off-screen
-    if (position.x < -10) {
+    if (position.x < -50) { // Adjust the condition to ensure pipes are removed correctly
       updateScore();
       removeFromParent();
     }
 
-    // Handle collision detection
     if (gameRef.isHit) {
       removeFromParent();
       gameRef.isHit = false;
