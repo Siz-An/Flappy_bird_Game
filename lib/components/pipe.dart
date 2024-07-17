@@ -29,7 +29,7 @@ class Pipe extends PositionComponent with HasGameRef<FlappyBirdGame> {
     // Initialize the sprite component
     pipeSprite = SpriteComponent(
       sprite: Sprite(pipePosition == PipePosition.top ? pipeRotatedImage : pipeImage),
-      size: Vector2(50, height), // Ensure the pipe size is set correctly
+      size: Vector2(50, height),
     );
 
     // Set the position of the pipe

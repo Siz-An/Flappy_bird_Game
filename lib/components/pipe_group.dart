@@ -8,21 +8,25 @@ import '../utils/pipe_position.dart';
 import 'pipe.dart';
 
 class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
-  PipeGroup();
+  PipeGroup({this.isFirstPipe = false});
 
   final _random = Random();
+  final bool isFirstPipe;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
     position.x = gameRef.size.x;
 
     final heightMinusGround = gameRef.size.y - Config.groundHeight;
-    final spacing = Config.pipeSpacing;
+
+    // Get current spacing based on the player's score
+    final spacing = getCurrentPipeSpacing(gameRef.bird.score);
 
     // Determine a reasonable center position for the pipes
-    final centerY = Config.pipeMinHeight +
+    final centerY = isFirstPipe
+        ? heightMinusGround * 0.3 // Lower center position for the first pipe
+        : Config.pipeMinHeight +
         _random.nextDouble() * (heightMinusGround - Config.pipeMinHeight * 2 - spacing);
 
     // Calculate the heights of the pipes
@@ -45,10 +49,21 @@ class PipeGroup extends PositionComponent with HasGameRef<FlappyBirdGame> {
     FlameAudio.play(Assets.point);
   }
 
+  double getCurrentPipeSpacing(int score) {
+    // Decrease spacing as score increases
+    final minSpacing = 80.0;
+    final maxSpacing = 200.0;
+    final spacingReductionFactor = 0.5;
+    return (maxSpacing - (score * spacingReductionFactor)).clamp(minSpacing, maxSpacing);
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
-    position.x -= Config.gameSpeed * dt;
+
+    // Increase game speed as score increases
+    final speedIncreaseFactor = 0.5;
+    position.x -= (Config.gameSpeed + gameRef.bird.score * speedIncreaseFactor) * dt;
 
     if (position.x < -50) {
       updateScore();

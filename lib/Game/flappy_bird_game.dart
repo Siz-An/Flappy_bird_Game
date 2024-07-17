@@ -15,6 +15,7 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
   Timer interval = Timer(Config.pipeInterval, repeat: true);
   bool isHit = false;
   late TextComponent score;
+  bool isFirstPipe = true;
 
   @override
   Future<void> onLoad() async {
@@ -22,7 +23,10 @@ class FlappyBirdGame extends FlameGame with TapDetector, HasCollisionDetection {
     add(Ground());
     bird = Bird();
     add(bird);
-    interval.onTick = () => add(PipeGroup());
+    interval.onTick = () {
+      add(PipeGroup(isFirstPipe: isFirstPipe));
+      isFirstPipe = false;
+    };
     add(score = buildScore());
   }
 
